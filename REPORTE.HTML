@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte de Recibos - Importadora La Uno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f8f8f8;
+    }
+    h1 {
+      text-align: center;
+      color: #0070f3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #0070f3;
+      color: white;
+    }
+    input.editable {
+      border: none;
+      background: #eef;
+      width: 100%;
+      font-size: 14px;
+    }
+    .acciones {
+      margin: 15px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      color: white;
+      background-color: #0070f3;
+      border-radius: 4px;
+    }
+    button.danger {
+      background-color: #d11a2a;
+    }
+    .volver {
+      background-color: #555;
+      text-decoration: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>REPORTE DE RECIBOS</h1>
+
+  <div class="acciones">
+    <button onclick="imprimir()">🖨 Imprimir</button>
+    <button onclick="exportarCSV()">📤 Exportar CSV</button>
+    <button class="danger" onclick="borrarHistorial()">🗑 Borrar Todo</button>
+    <a href="index.html" class="volver">⬅️ Volver al Menú</a>
+  </div>
+
+  <table id="tablaRecibos">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Cliente</th>
+        <th>Vendedor</th>
+        <th>Factura</th>
+        <th>Fecha</th>
+        <th>Cajas</th>
+        <th>Bolsas</th>
+        <th>Descripción 1</th>
+        <th>Descripción 2</th>
+        <th>Recibido por</th>
+        <th>Entregado por</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const tabla = document.querySelector("#tablaRecibos tbody");
+
+    function cargarDatos() {
+      const año = new Date().getFullYear();
+      const datos = JSON.parse(localStorage.getItem("recibos_" + año) || "[]");
+      tabla.innerHTML = "";
+      datos.forEach((recibo, index) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${recibo.numero}</td>
+          <td>${recibo.cliente}</td>
+          <td>${recibo.vendedor}</td>
+          <td>${recibo.factura}</td>
+          <td>${recibo.fecha}</td>
+          <td>${recibo.cajas}</td>
+          <td>${recibo.bolsas}</td>
+          <td>${recibo.descripcion1}</td>
+          <td>${recibo.descripcion2}</td>
+          <td><input class="editable" value="${recibo.recibido || ""}" data-index="${index}" data-campo="recibido"></td>
+          <td><input class="editable" value="${recibo.entregado || ""}" data-index="${index}" data-campo="entregado"></td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    document.addEventListener("input", function(e) {
+      if (e.target.classList.contains("editable")) {
+        const año = new Date().getFullYear();
+        const datos = JSON.parse(localStorage.getItem("recibos_" + año) || "[]");
+        const index = e.target.dataset.index;
+        const campo = e.target.dataset.campo;
+        datos[index][campo] = e.target.value;
+        localStorage.setItem("recibos_" + año, JSON.stringify(datos));
+      }
+    });
+
+    function imprimir() {
+      window.print();
+    }
+
+    function exportarCSV() {
+      const año = new Date().getFullYear();
+      const datos = JSON.parse(localStorage.getItem("recibos_" + año) || "[]");
+      if (datos.length === 0) {
+        alert("No hay datos para exportar.");
+        return;
+      }
+
+      const filas = [
+        ["No.", "Cliente", "Vendedor", "Factura", "Fecha", "Cajas", "Bolsas", "Descripción 1", "Descripción 2", "Recibido por", "Entregado por"]
+      ];
+
+      datos.forEach(r => {
+        filas.push([
+          r.numero, r.cliente, r.vendedor, r.factura, r.fecha,
+          r.cajas, r.bolsas, r.descripcion1, r.descripcion2,
+          r.recibido || "", r.entregado || ""
+        ]);
+      });
+
+      const csv = filas.map(f => f.map(v => `"${v}"`).join(",")).join("\\n");
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "reporte_recibos.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function borrarHistorial() {
+      const clave = prompt("Ingrese la contraseña para borrar:");
+      if (clave === "LaUno1") {
+        const año = new Date().getFullYear();
+        localStorage.removeItem("recibos_" + año);
+        alert("Historial eliminado.");
+        cargarDatos();
+      } else if (clave) {
+        alert("Contraseña incorrecta.");
+      }
+    }
+
+    cargarDatos();
+  </script>
+</body>
+</html>

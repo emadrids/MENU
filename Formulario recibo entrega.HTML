@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Recibo Entrega - Importadora La Uno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @page {
+      size: 8.5in 5.5in landscape;
+      margin: 0.5in;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+    }
+
+    .formulario {
+      width: 7.5in;
+      height: 4.8in;
+      padding: 0.2in 0.3in;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    header img {
+      height: 75px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 auto;
+      text-align: center;
+      flex: 1;
+    }
+
+    .numero-consecutivo {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 5px 0 10px 0;
+    }
+
+    .fila {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .campo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .campo.ancho {
+      flex: 2;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    input {
+      font-size: 15px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    input.cantidad {
+      width: 100px;
+    }
+
+    .boton {
+      padding: 6px 12px;
+      font-size: 14px;
+      background: #0070f3;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .botones {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      input {
+        border: none;
+      }
+    }
+
+    .firmas {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      font-size: 14px;
+    }
+
+    .firmas .linea {
+      width: 45%;
+      border-top: 1px solid #000;
+      text-align: center;
+      padding-top: 5px;
+    }
+
+    .pie {
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="formulario">
+
+    <!-- Encabezado -->
+    <header>
+      <img src="LOGO%20LA%20UNO%20EDITABLE.jpg" alt="Importadora La Uno">
+      <h1>RECIBO ENTREGA DE MERCADERÍA</h1>
+      <div class="botones no-print">
+        <button class="boton" onclick="limpiarFormulario()">Limpiar</button>
+        <button class="boton" onclick="imprimirYSumar()">Imprimir</button>
+        <button class="boton" onclick="reiniciarContador()">Reiniciar No.</button>
+      </div>
+    </header>
+
+    <!-- Número consecutivo -->
+    <div class="numero-consecutivo" id="numeroConsecutivo">No. 202500000001</div>
+
+    <!-- Cliente y Vendedor -->
+    <div class="fila">
+      <div class="campo ancho">
+        <label>Cliente</label>
+        <input type="text" id="cliente">
+      </div>
+      <div class="campo ancho">
+        <label>Vendedor</label>
+        <input type="text" id="vendedor">
+      </div>
+    </div>
+
+    <!-- Factura y Fecha -->
+    <div class="fila">
+      <div class="campo">
+        <label>Factura No.</label>
+        <input type="text" id="factura">
+      </div>
+      <div class="campo">
+        <label>Fecha</label>
+        <input type="date" id="fecha">
+      </div>
+    </div>
+
+    <!-- Cajas y Bolsas -->
+    <div class="fila">
+      <div class="campo">
+        <label>Cajas</label>
+        <input type="number" id="cajas" class="cantidad">
+      </div>
+      <div class="campo">
+        <label>Bolsas</label>
+        <input type="number" id="bolsas" class="cantidad">
+      </div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="campo">
+      <label>Descripción</label>
+      <input type="text" id="descripcion1">
+    </div>
+    <div class="campo">
+      <input type="text" id="descripcion2">
+    </div>
+
+    <!-- Firmas -->
+    <div class="firmas">
+      <div class="linea">RECIBIDO POR</div>
+      <div class="linea">ENTREGADO POR</div>
+    </div>
+
+    <!-- Pie -->
+    <div class="pie">IMPORTADORA LA UNO</div>
+  </div>
+
+  <script>
+    const añoActual = new Date().getFullYear();
+    const claveReinicio = "La1";
+    const claveLocalStorage = "form_numero_" + añoActual;
+
+    const campos = ["cliente", "vendedor", "factura", "descripcion1", "descripcion2", "cajas", "bolsas"];
+
+    // Cargar datos al inicio
+    window.onload = function () {
+      // Fecha automática editable
+      const fechaCampo = document.getElementById('fecha');
+      const hoy = new Date();
+      fechaCampo.valueAsDate = hoy;
+
+      // Cargar datos de campos
+      campos.forEach(id => {
+        const saved = localStorage.getItem("form_" + id);
+        if (saved !== null) document.getElementById(id).value = saved;
+      });
+
+      // Cargar número del año actual
+      let numero = localStorage.getItem(claveLocalStorage) || "1";
+      actualizarNumero(numero);
+    };
+
+    // Guardar automáticamente cada campo
+    campos.forEach(id => {
+      const campo = document.getElementById(id);
+      campo.addEventListener("input", () => {
+        localStorage.setItem("form_" + id, campo.value);
+      });
+    });
+
+    // Mostrar número en formato No. YYYY00000001
+    function actualizarNumero(numero) {
+      const parteNumerica = parseInt(numero).toString().padStart(8, '0');
+      document.getElementById("numeroConsecutivo").textContent = "No. " + añoActual + parteNumerica;
+    }
+
+    // Imprimir e incrementar contador del año
+    function imprimirYSumar() {
+      let numero = parseInt(localStorage.getItem(claveLocalStorage) || "1");
+      window.print();
+      numero++;
+      localStorage.setItem(claveLocalStorage, numero.toString());
+      actualizarNumero(numero);
+    }
+
+    // Limpiar formulario
+    function limpiarFormulario() {
+      campos.forEach(id => {
+        document.getElementById(id).value = "";
+        localStorage.removeItem("form_" + id);
+      });
+    }
+
+    // Reiniciar contador con contraseña
+    function reiniciarContador() {
+      const clave = prompt("Ingrese la contraseña para reiniciar:");
+      if (clave === claveReinicio) {
+        localStorage.setItem(claveLocalStorage, "1");
+        actualizarNumero(1);
+        alert("Número reiniciado correctamente.");
+      } else if (clave) {
+        alert("Contraseña incorrecta.");
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario Cliente</title>
+  <style>
+    @media print {
+      .controles {
+        display: none !important;
+      }
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      width: 8.5in;
+      height: 5in;
+      margin: auto;
+      border: 1px solid black;
+      padding: 10px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .logo {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .controles {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .controles button {
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .campo {
+      border: 1px solid black;
+      margin-bottom: 8px;
+      padding: 5px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      font-size: 16px;
+      border: none;
+      outline: none;
+    }
+
+    .mensaje {
+      border: 1px solid black;
+      padding: 10px;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      margin-top: 5px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botones -->
+  <div class="controles">
+    <button onclick="window.print()">🖨️ Imprimir</button>
+    <button onclick="limpiarCampos()">🧹 Limpiar</button>
+  </div>
+
+  <!-- Formulario -->
+  <div class="campo">
+    <label for="nombre">NOMBRE:</label><br>
+    <input type="text" id="nombre" name="nombre">
+  </div>
+
+  <div class="campo">
+    <label for="telefono">TELÉFONO:</label><br>
+    <input type="text" id="telefono" name="telefono">
+  </div>
+
+  <div class="campo">
+    <label for="direccion">DIRECCIÓN:</label><br>
+    <textarea id="direccion" name="direccion" rows="2"></textarea>
+  </div>
+
+  <!-- Mensaje con logo y firma -->
+  <div class="mensaje">
+    <img src="logo.JPG" alt="Importadora La Uno" class="logo"><br>
+    QUERIDO CLIENTE, GRACIAS POR SU COMPRA.<br>
+    ESPERAMOS QUE EL PEDIDO SEA DE SU AGRADO Y DE BENDICIÓN.<br>
+    ¡LE ESPERAMOS PRONTO!<br>
+    IMPORTADORA LA UNO
+  </div>
+
+  <!-- Script -->
+  <script>
+    function limpiarCampos() {
+      document.getElementById('nombre').value = '';
+      document.getElementById('telefono').value = '';
+      document.getElementById('direccion').value = '';
+    }
+  </script>
+
+</body>
+</html>

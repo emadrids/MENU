@@ -181,7 +181,12 @@
     }
 
     function verReporte() {
-      window.open("REPORTE.html", "_blank");
+      const clave = prompt("Ingrese la contraseña para ver el reporte:");
+      if (clave === "LaUno1") {
+        window.open("reporte.html", "_blank");
+      } else if (clave) {
+        alert("Contraseña incorrecta.");
+      }
     }
 
     function limpiarFormulario() {

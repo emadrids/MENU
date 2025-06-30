@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,10 +5,7 @@
   <title>Recibo Entrega - Importadora La Uno</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    @page {
-      size: 8.5in 5.5in landscape;
-      margin: 0.5in;
-    }
+    @page { size: 8.5in 5.5in landscape; margin: 0.5in; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -22,7 +18,6 @@
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
     }
     header {
       display: flex;
@@ -55,9 +50,7 @@
       display: flex;
       flex-direction: column;
     }
-    .campo.ancho {
-      flex: 2;
-    }
+    .campo.ancho { flex: 2; }
     label {
       font-weight: bold;
       font-size: 15px;
@@ -68,9 +61,7 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
-    input.cantidad {
-      width: 100px;
-    }
+    input.cantidad { width: 100px; }
     .boton {
       padding: 6px 12px;
       font-size: 14px;
@@ -85,12 +76,8 @@
       margin-bottom: 5px;
     }
     @media print {
-      .no-print {
-        display: none !important;
-      }
-      input {
-        border: none;
-      }
+      .no-print { display: none !important; }
+      input { border: none; }
     }
     .firmas {
       display: flex;
@@ -122,25 +109,27 @@
         <button class="boton" onclick="imprimirYGuardar()">Imprimir</button>
         <button class="boton" onclick="verReporte()">Ver Reporte</button>
         <button class="boton" onclick="window.location.href='index.html'">⬅️ Regresar al Menú</button>
-                <button class="boton" onclick="reiniciarContrasena()">Borrar Historial</button>
+        <button class="boton" onclick="reiniciarContrasena()">Borrar Historial</button>
       </div>
     </header>
 
     <div class="numero-consecutivo" id="numeroConsecutivo">No. 202500000001</div>
 
     <div class="fila">
-      <div class="campo ancho"><label>Cliente</label><input type="text" id="cliente"></div>
-      <div class="campo ancho"><label>Vendedor</label><input type="text" id="vendedor"></div>
+      <div class="campo ancho"><label><strong>Cliente</strong></label><input type="text" id="cliente"></div>
+      <div class="campo ancho"><label><strong>Vendedor</strong></label><input type="text" id="vendedor"></div>
     </div>
 
     <div class="fila">
-      <div class="campo"><label>Factura No.</label><input type="text" id="factura"></div>
-      <div class="campo"><label>Fecha</label><input type="date" id="fecha"></div>
+      <div class="campo"><label><strong>Factura No.</strong></label><input type="text" id="factura"></div>
+      <div class="campo"><label><strong>Fecha</strong></label><input type="date" id="fecha"></div>
     </div>
 
     <div class="fila">
-      <div class="campo"><label>Cajas</label><input type="number" id="cajas" class="cantidad"></div>
-      <div class="campo"><label>Bolsas</label><input type="number" id="bolsas" class="cantidad"></div>
+      <div class="campo"><label><strong>Cajas</strong></label><input type="number" id="cajas" class="cantidad" oninput="actualizarTotalUnidades()"></div>
+      <div class="campo"><label><strong>Bolsas</strong></label><input type="number" id="bolsas" class="cantidad" oninput="actualizarTotalUnidades()"></div>
+      <div class="campo"><label><strong>Fardos</strong></label><input type="number" id="fardos" class="cantidad" oninput="actualizarTotalUnidades()"></div>
+      <div class="campo"><label><strong>TOTAL-UNID.</strong></label><input type="number" id="sumaTotal" class="cantidad" readonly></div>
     </div>
 
     <div class="campo"><label>Descripción</label><input type="text" id="descripcion1"></div>
@@ -161,6 +150,14 @@
     document.getElementById("fecha").valueAsDate = new Date();
     document.getElementById("numeroConsecutivo").textContent = "No. " + año + "00000001";
 
+    function actualizarTotalUnidades() {
+      const cajas = parseInt(document.getElementById("cajas").value) || 0;
+      const bolsas = parseInt(document.getElementById("bolsas").value) || 0;
+      const fardos = parseInt(document.getElementById("fardos").value) || 0;
+      const total = cajas + bolsas + fardos;
+      document.getElementById("sumaTotal").value = total;
+    }
+
     function imprimirYGuardar() {
       const datos = {
         numero: document.getElementById("numeroConsecutivo").textContent,
@@ -170,10 +167,10 @@
         fecha: document.getElementById("fecha").value,
         cajas: document.getElementById("cajas").value,
         bolsas: document.getElementById("bolsas").value,
+        fardos: document.getElementById("fardos").value,
+        totalUnidades: document.getElementById("sumaTotal").value,
         descripcion1: document.getElementById("descripcion1").value,
-        descripcion2: document.getElementById("descripcion2").value,
-        recibido: "",
-        entregado: ""
+        descripcion2: document.getElementById("descripcion2").value
       };
       let registros = JSON.parse(localStorage.getItem(claveLocal)) || [];
       registros.push(datos);
@@ -191,7 +188,7 @@
     }
 
     function limpiarFormulario() {
-      ['cliente', 'vendedor', 'factura', 'fecha', 'cajas', 'bolsas', 'descripcion1', 'descripcion2'].forEach(id => {
+      ['cliente', 'vendedor', 'factura', 'fecha', 'cajas', 'bolsas', 'fardos', 'sumaTotal', 'descripcion1', 'descripcion2'].forEach(id => {
         document.getElementById(id).value = "";
       });
     }

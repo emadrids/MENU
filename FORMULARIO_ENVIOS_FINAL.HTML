@@ -9,7 +9,6 @@
         display: none !important;
       }
     }
-
     body {
       font-family: Arial, sans-serif;
       width: 8.5in;
@@ -19,46 +18,38 @@
       padding: 10px;
       box-sizing: border-box;
     }
-
     .controles {
       margin-bottom: 10px;
       display: flex;
       gap: 10px;
       justify-content: center;
     }
-
     .controles button {
       padding: 8px 16px;
       font-size: 14px;
       cursor: pointer;
     }
-
     .campo {
       border: 1px solid black;
       margin-bottom: 8px;
       padding: 5px;
     }
-
     label {
       font-weight: bold;
     }
-
     input {
       width: 100%;
       font-size: 18px;
       border: none;
       outline: none;
     }
-
     .fila-horizontal {
       display: flex;
       gap: 10px;
     }
-
     .fila-horizontal > div {
       flex: 1;
     }
-
     .mensaje {
       border: 1px solid black;
       padding: 10px;
@@ -69,17 +60,14 @@
       margin-top: 5px;
       line-height: 1.6;
     }
-
     .mensaje img {
       height: 80px;
       margin-top: 10px;
     }
-
     .volver-menu {
       text-align: right;
       margin-bottom: 10px;
     }
-
     .volver-menu a {
       background: #0070f3;
       color: white;
@@ -114,22 +102,22 @@
     </div>
   </div>
 
-  <!-- Dirección (3 líneas) -->
+  <!-- Dirección en 3 líneas -->
   <div class="campo">
     <label>DIRECCIÓN:</label><br>
-    <input type="text" id="direccion1" placeholder="Ej. tres cuadras arriba del mercado mamá chepe"><br>
-    <input type="text" id="direccion2"><br>
-    <input type="text" id="direccion3">
+    <input type="text" id="direccion1" placeholder="1"><br>
+    <input type="text" id="direccion2"placeholder="2"><br>
+    <input type="text" id="direccion3"placeholder="3"><br>
   </div>
 
-  <!-- Mensaje con logo abajo -->
+  <!-- Mensaje con logo en base64 -->
   <div class="mensaje">
     QUERIDO CLIENTE, GRACIAS POR SU COMPRA.<br>
     ESPERAMOS QUE EL PEDIDO SEA DE SU AGRADO Y DE BENDICIÓN.<br>
     ¡LE ESPERAMOS PRONTO!<br>
     IMPORTADORA LA UNO
     <br>
-    <img src="logo.JPG" alt="Importadora La Uno">
+    <img src="data:image/jpeg;base64,{{AQUÍ VA TU BASE64}}" alt="Importadora La Uno">
   </div>
 
   <script>

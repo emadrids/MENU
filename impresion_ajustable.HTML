@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Imprimir Imagen 8.5 x 5.5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @page {
+      size: letter portrait;
+      margin: 0;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .marco {
+      width: 100%;
+      max-width: 8.5in;
+      height: auto;
+      aspect-ratio: 17 / 11;
+      border: 2px dashed #333;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .marco img {
+      transition: transform 0.3s ease;
+      max-width: none;
+      max-height: none;
+    }
+    .controles {
+      margin: 10px;
+      background: white;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      z-index: 999;
+    }
+    .controles input[type="range"] {
+      width: 100px;
+    }
+    @media print {
+      .controles, .no-print {
+        display: none;
+      }
+    }
+    @media (max-width: 600px) {
+      .controles {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div style="text-align: right; margin: 10px;" class="no-print">
+    <a href="index.html" style="
+      background: #0070f3;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+    ">⬅️ Volver al Menú</a>
+  </div>
+
+  <!-- Controles -->
+  <div class="controles">
+    <input type="file" accept="image/*" id="fileInput"><br><br>
+    Zoom:
+    <button onclick="ajustarZoom(-0.05)">➖</button>
+    <input type="range" id="zoom" min="0.1" max="2" step="0.05" value="1">
+    <button onclick="ajustarZoom(0.05)">➕</button>
+    <br><br>
+    <button onclick="rotarImagen()">Girar 90°</button>
+    <button onclick="window.print()">Imprimir</button><br><br>
+    <small>Puedes pegar imagen (Ctrl+V en PC o seleccionar archivo en celular)</small>
+  </div>
+
+  <!-- Marco -->
+  <div class="marco" id="dropArea">
+    <img id="imagen" src="" alt="Imagen pegada o cargada">
+  </div>
+
+  <!-- Script -->
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const imagen = document.getElementById('imagen');
+    const zoom = document.getElementById('zoom');
+    let rotacion = 0;
+
+    fileInput.addEventListener('change', function () {
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => imagen.src = e.target.result;
+        reader.readAsDataURL(file);
+      }
+    });
+
+    zoom.addEventListener('input', actualizarTransformacion);
+
+    function rotarImagen() {
+      rotacion = (rotacion + 90) % 360;
+      actualizarTransformacion();
+    }
+
+    function ajustarZoom(delta) {
+      let nuevoZoom = parseFloat(zoom.value) + delta;
+      nuevoZoom = Math.min(Math.max(nuevoZoom, parseFloat(zoom.min)), parseFloat(zoom.max));
+      zoom.value = nuevoZoom.toFixed(2);
+      actualizarTransformacion();
+    }
+
+    function actualizarTransformacion() {
+      const escala = zoom.value;
+      imagen.style.transform = `scale(${escala}) rotate(${rotacion}deg)`;
+    }
+
+    window.addEventListener('paste', function (event) {
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.type.indexOf("image") === 0) {
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imagen.src = e.target.result;
+          };
+          reader.readAsDataURL(blob);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

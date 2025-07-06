@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Recibo Entrega - Importadora La Uno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @page { size: 8.5in 5.5in landscape; margin: 0.5in; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+    }
+    .formulario {
+      width: 7.5in;
+      height: 4.8in;
+      padding: 0.2in 0.3in;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    header img {
+      height: 75px;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0 auto;
+      text-align: center;
+      flex: 1;
+    }
+    .numero-consecutivo {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 5px 0 10px 0;
+    }
+    .fila {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .campo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .campo.ancho { flex: 2; }
+    label {
+      font-weight: bold;
+      font-size: 15px;
+    }
+    input {
+      font-size: 15px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    input.cantidad { width: 100px; }
+    .boton {
+      padding: 6px 12px;
+      font-size: 14px;
+      background: #0070f3;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .botones {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      input { border: none; }
+    }
+    .firmas {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      font-size: 14px;
+    }
+    .firmas .linea {
+      width: 45%;
+      border-top: 1px solid #000;
+      text-align: center;
+      padding-top: 5px;
+    }
+    .pie {
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="formulario">
+    <header>
+      <img src="LOGO%20LA%20UNO%20EDITABLE.jpg" alt="Importadora La Uno">
+      <h1>RECIBO ENTREGA DE MERCADERÍA</h1>
+      <div class="botones no-print">
+        <button class="boton" onclick="limpiarFormulario()">Limpiar</button>
+        <button class="boton" onclick="imprimirYGuardar()">Imprimir</button>
+        <button class="boton" onclick="verReporte()">Ver Reporte</button>
+        <button class="boton" onclick="window.location.href='index.html'">⬅️ Regresar al Menú</button>
+        <button class="boton" onclick="reiniciarContrasena()">Borrar Historial</button>
+      </div>
+    </header>
+
+    <div class="numero-consecutivo" id="numeroConsecutivo">No. 202500000001</div>
+
+    <div class="fila">
+      <div class="campo ancho"><label><strong>Cliente</strong></label><input type="text" id="cliente"></div>
+      <div class="campo ancho"><label><strong>Vendedor</strong></label><input type="text" id="vendedor"></div>
+    </div>
+
+    <div class="fila">
+      <div class="campo"><label><strong>Factura No.</strong></label><input type="text" id="factura"></div>
+      <div class="campo"><label><strong>Fecha</strong></label><input type="date" id="fecha"></div>
+    </div>
+
+    <div class="fila">
+      <div class="campo"><label><strong>Cajas</strong></label><input type="number" id="cajas" class="cantidad" oninput="actualizarTotalUnidades()"></div>
+      <div class="campo"><label><strong>Bolsas</strong></label><input type="number" id="bolsas" class="cantidad" oninput="actualizarTotalUnidades()"></div>
+      <div class="campo"><label><strong>Fardos</strong></label><input type="number" id="fardos" class="cantidad" oninput="actualizarTotalUnidades()"></div>
+      <div class="campo"><label><strong>TOTAL-UNID.</strong></label><input type="number" id="sumaTotal" class="cantidad" readonly></div>
+    </div>
+
+    <div class="campo"><label>Descripción</label><input type="text" id="descripcion1"></div>
+    <div class="campo"><input type="text" id="descripcion2"></div>
+
+    <div class="firmas">
+      <div class="linea">RECIBIDO POR</div>
+      <div class="linea">ENTREGADO POR</div>
+    </div>
+
+    <div class="pie">IMPORTADORA LA UNO</div>
+  </div>
+
+  <script>
+    const año = new Date().getFullYear();
+    const claveLocal = "recibos_" + año;
+
+    document.getElementById("fecha").valueAsDate = new Date();
+    document.getElementById("numeroConsecutivo").textContent = "No. " + año + "00000001";
+
+    function actualizarTotalUnidades() {
+      const cajas = parseInt(document.getElementById("cajas").value) || 0;
+      const bolsas = parseInt(document.getElementById("bolsas").value) || 0;
+      const fardos = parseInt(document.getElementById("fardos").value) || 0;
+      const total = cajas + bolsas + fardos;
+      document.getElementById("sumaTotal").value = total;
+    }
+
+    function imprimirYGuardar() {
+      const datos = {
+        numero: document.getElementById("numeroConsecutivo").textContent,
+        cliente: document.getElementById("cliente").value,
+        vendedor: document.getElementById("vendedor").value,
+        factura: document.getElementById("factura").value,
+        fecha: document.getElementById("fecha").value,
+        cajas: document.getElementById("cajas").value,
+        bolsas: document.getElementById("bolsas").value,
+        fardos: document.getElementById("fardos").value,
+        totalUnidades: document.getElementById("sumaTotal").value,
+        descripcion1: document.getElementById("descripcion1").value,
+        descripcion2: document.getElementById("descripcion2").value
+      };
+      let registros = JSON.parse(localStorage.getItem(claveLocal)) || [];
+      registros.push(datos);
+      localStorage.setItem(claveLocal, JSON.stringify(registros));
+      window.print();
+    }
+
+    function verReporte() {
+      const clave = prompt("Ingrese la contraseña para ver el reporte:");
+      if (clave === "LaUno1") {
+        window.open("reporte.html", "_blank");
+      } else if (clave) {
+        alert("Contraseña incorrecta.");
+      }
+    }
+
+    function limpiarFormulario() {
+      ['cliente', 'vendedor', 'factura', 'fecha', 'cajas', 'bolsas', 'fardos', 'sumaTotal', 'descripcion1', 'descripcion2'].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+    }
+
+    function reiniciarContrasena() {
+      const clave = prompt("Ingrese la contraseña para borrar el historial:");
+      if (clave === "LaUno1") {
+        localStorage.removeItem(claveLocal);
+        alert("Historial borrado correctamente.");
+      } else if (clave) {
+        alert("Contraseña incorrecta.");
+      }
+    }
+  </script>
+</body>
+</html>

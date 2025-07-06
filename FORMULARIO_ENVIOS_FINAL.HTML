@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario Cliente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @media print {
+      .controles, .volver-menu {
+        display: none !important;
+      }
+    }
+    body {
+      font-family: Arial, sans-serif;
+      width: 8.5in;
+      height: 5in;
+      margin: auto;
+      border: 1px solid black;
+      padding: 10px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .logo {
+      height: 64px;
+      margin-top: 10px;
+    }
+    .controles {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .controles button {
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .campo {
+      border: 1px solid black;
+      margin-bottom: 8px;
+      padding: 5px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      font-size: 18px;
+      border: none;
+      outline: none;
+    }
+    input#telefono {
+      width: 100%;
+      font-size: 18px;
+      border: none;
+      outline: none;
+      letter-spacing: 2px;
+    }
+    .mensaje {
+      border: 1px solid black;
+      padding: 10px;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      margin-top: 5px;
+      line-height: 1.6;
+    }
+    .volver-menu {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .volver-menu a {
+      background: #0070f3;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="volver-menu">
+    <a href="index.html">⬅️ Volver al Menú</a>
+  </div>
+
+  <div class="controles">
+    <button onclick="window.print()">🖨️ Imprimir</button>
+    <button onclick="limpiarCampos()">🧹 Limpiar</button>
+  </div>
+
+  
+  <div class="campo" style="display: flex; gap: 10px;">
+    <div style="flex: 1;">
+      <label for="nombre">NOMBRE:</label><br>
+      <input type="text" id="nombre" name="nombre">
+    </div>
+    <div style="flex: 1;">
+      <label for="telefono">TELÉFONO:</label><br>
+      <input type="text" id="telefono" name="telefono" maxlength="9" placeholder="0000-0000">
+    </div>
+  </div>
+
+
+  <div class="campo">
+    <label for="direccion">DIRECCIÓN:</label><br>
+    <textarea id="direccion" name="direccion" rows="3" placeholder="Tres cuadras arriba del mercado..."></textarea>
+  </div>
+
+  <div class="mensaje">
+    QUERIDO CLIENTE, GRACIAS POR SU COMPRA.<br>
+    ESPERAMOS QUE EL PEDIDO SEA DE SU AGRADO Y DE BENDICIÓN.<br>
+    ¡LE ESPERAMOS PRONTO!<br>
+    IMPORTADORA LA UNO
+  </div>
+
+  <div style="text-align: center;">
+    <img src="data:image/png;base64,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" alt="Importadora La Uno" class="logo">
+  </div>
+
+  <script>
+    function limpiarCampos() {
+      document.getElementById('nombre').value = '';
+      document.getElementById('telefono').value = '';
+      document.getElementById('direccion').value = '';
+    }
+
+    document.getElementById('telefono').addEventListener('input', function (e) {
+      let val = e.target.value.replace(/\D/g, '').slice(0, 8);
+      if (val.length > 4) {
+        e.target.value = val.slice(0, 4) + '-' + val.slice(4);
+      } else {
+        e.target.value = val;
+      }
+    });
+  </script>
+
+</body>
+</html>
